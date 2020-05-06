@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-const double buttonHeight = 70;
-const cardColOn = Color(0xff1d1e33);
-const cardColOff = Color(0xff111328);
-const buttCol = Color(0xffeb1555);
-
-enum Gender { male, female }
+import 'results_page.dart';
+import 'constants.dart';
+import 'calculator_brain.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -16,7 +13,7 @@ class InputPage extends StatefulWidget {
 class _InputPageState extends State<InputPage> {
   Gender selectedGender;
   int height = 180;
-  int weight = 180;
+  int weight = 60;
   int age = 22;
   /* Deprecated code that did gender card selection. Replaced with ternary operator
   void genderTap(Gender type) {
@@ -58,11 +55,13 @@ class _InputPageState extends State<InputPage> {
                         selectedGender = Gender.male;
                       });
                     },
-                    col: selectedGender == Gender.male ? cardColOn : cardColOff,
+                    col: selectedGender == Gender.male
+                        ? kCardColOn
+                        : kCardColOff,
                     cardChild: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.accessibility_new, size: 50),
+                        Icon(FontAwesomeIcons.mars, size: 50),
                         SizedBox(height: 5),
                         Text('MALE'),
                       ],
@@ -77,12 +76,12 @@ class _InputPageState extends State<InputPage> {
                       });
                     },
                     col: selectedGender == Gender.female
-                        ? cardColOn
-                        : cardColOff,
+                        ? kCardColOn
+                        : kCardColOff,
                     cardChild: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.backup, size: 50),
+                        Icon(FontAwesomeIcons.venus, size: 50),
                         SizedBox(height: 5),
                         Text('FEMALE'),
                       ],
@@ -95,7 +94,7 @@ class _InputPageState extends State<InputPage> {
           Expanded(
             //height slider
             child: ReusableCard(
-              col: cardColOn,
+              col: kCardColOn,
               cardChild: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -137,7 +136,7 @@ class _InputPageState extends State<InputPage> {
                 Expanded(
                   child: ReusableCard(
                     //weight
-                    col: cardColOn,
+                    col: kCardColOn,
                     cardChild: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -154,13 +153,14 @@ class _InputPageState extends State<InputPage> {
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
-                            Text('lbs'),
+                            Text('kg'),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             FloatingActionButton(
+                              heroTag: 'btn1',
                               backgroundColor: Color(0xff4c4f5e),
                               child: Icon(Icons.keyboard_arrow_down,
                                   color: Colors.white),
@@ -172,6 +172,7 @@ class _InputPageState extends State<InputPage> {
                             ),
                             SizedBox(width: 20),
                             FloatingActionButton(
+                              heroTag: 'btn2',
                               backgroundColor: Color(0xff4c4f5e),
                               child: Icon(Icons.keyboard_arrow_up,
                                   color: Colors.white),
@@ -190,7 +191,7 @@ class _InputPageState extends State<InputPage> {
                 Expanded(
                   child: ReusableCard(
                     //age
-                    col: cardColOn,
+                    col: kCardColOn,
                     cardChild: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -214,6 +215,7 @@ class _InputPageState extends State<InputPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             FloatingActionButton(
+                              heroTag: 'btn3',
                               backgroundColor: Color(0xff4c4f5e),
                               child: Icon(Icons.keyboard_arrow_down,
                                   color: Colors.white),
@@ -225,6 +227,7 @@ class _InputPageState extends State<InputPage> {
                             ),
                             SizedBox(width: 20),
                             FloatingActionButton(
+                              heroTag: 'btn4',
                               backgroundColor: Color(0xff4c4f5e),
                               child: Icon(Icons.keyboard_arrow_up,
                                   color: Colors.white),
@@ -243,18 +246,34 @@ class _InputPageState extends State<InputPage> {
               ],
             ),
           ),
-          Container(
-            color: buttCol,
-            margin: EdgeInsets.only(top: 10),
-            width: double.infinity,
-            height: buttonHeight,
-            child: FlatButton(
-              child: Text(
-                'Get yo BMI!',
-                textScaleFactor: 2,
-              ),
-              onPressed: () {},
-            ),
+          GestureDetector(
+            onTap: () {
+              CalculatorBrain calc = CalculatorBrain(
+                weight: weight,
+                height: height,
+              );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(
+                    bmiNumber: calc.calculateBMI(),
+                    bmiResult: calc.getResult(),
+                  ),
+                ),
+              );
+            },
+            child: Container(
+                color: kButtonCol,
+                margin: EdgeInsets.only(top: 10),
+                width: double.infinity,
+                height: kButtonHeight,
+                child: Center(
+                  child: Text(
+                    'CALCULATE',
+                    textScaleFactor: 2,
+                  ),
+                )),
           ),
         ],
       ),
